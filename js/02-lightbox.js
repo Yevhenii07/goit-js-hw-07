@@ -1,28 +1,42 @@
-import { galleryItems } from './gallery-items.js';
+import { galleryItems } from "./gallery-items.js";
+// Change code below this line
+const listOfGallary = document.querySelector(".gallery");
 
-//! Change code below this line
+const imagesList = galleryItems
+  .map(({ preview, original, description }) => {
+    return `
+    <li class="gallery__item">
+        <a class="gallery__link" href="${original}">
+            <img class="gallery__image" src="${preview}" alt="${description}" />
+        </a>
+    </li>
+  `;
+  })
+  .join("");
 
-const galleryContainer = document.querySelector('.gallery');
-const galleryCardsSet = createGallery(galleryItems);
+listOfGallary.insertAdjacentHTML("beforeend", imagesList);
 
-function createGallery(galleryItems) {
-  return galleryItems
-    .map(({ original, preview, description }) => {
-      return `<div class="gallery__item" style="border-radius: 4px; background: transparent; box-shadow: none;">
-  <a class="gallery__item" href="${original}" style= "box-shadow: none;" style="border-radius: 4px;">
-  <img class="gallery__image" src="${preview}" alt="${description}" style="border: 1px solid transparent;
-  border-radius: 4px;
-  padding: 5px; background: rgba(255, 255, 255, 0.3); box-shadow: 0px 1px 3px 0px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 2px 1px -1px rgb(0 0 0 / 12%);"/>
-</a>
-</div>`;
-    })
-    .join('');
-}
-
-galleryContainer.insertAdjacentHTML('beforeend', galleryCardsSet);
-
-const lightbox = new SimpleLightbox('.gallery a', {
-  caption: true,
-  captionsData: 'alt',
+const lightbox = new SimpleLightbox(".gallery a", {
+  captionsData: "alt",
   captionDelay: 250,
 });
+
+listOfGallary.addEventListener("click", handleClick);
+
+function handleClick(event) {
+  event.preventDefault();
+  const target = event.target;
+  if (target.classList.contains("gallery__image")) {
+    lightbox.open(target.parentElement);
+  }
+}
+
+document.addEventListener("keydown", handleKeyDown);
+
+function handleKeyDown(event) {
+  if (event.key === "Escape") {
+    lightbox.close();
+  }
+}
+
+console.log(galleryItems);
